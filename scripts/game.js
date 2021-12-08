@@ -1,5 +1,5 @@
 import kaboom from "kaboom";
-kaboom()
+const k = kaboom({width:384,height:512})
 
 // load assets
 loadSprite("player", "./assets/sprites/player.png")
@@ -26,23 +26,21 @@ function patrol(speed = 60, dir = 1) {
 
 
 // define some constants
-const JUMP_FORCE = 1320
+
+const JUMP_FORCE = 1000
 const MOVE_SPEED = 480
 const FALL_DEATH = 2400
 
-const LEVELS = [
+let LEVELS = [
 	[
-		"                          ",
-		"  ======    ========      ",
-		"                          ",
-		"                          ",
-		"                          ",
-		"       = >  =         =   ",
-		"     ========         =   ",
-		"                      =   ",
-		"                      =   ",
-		"               = >    =   ",
-		"==========================",
+		"      ",
+		"==  ==",
+		"      ",
+		"  ==  ",
+		"      ",
+		"==  ==",
+		"      ",
+		"======",
 	]
 ]
 
@@ -57,6 +55,7 @@ const levelConf = {
 		area(),
 		solid(),
 		origin("bot"),
+		"platform"
 	],
 	">": () => [
 		sprite("bean"),
@@ -69,18 +68,27 @@ const levelConf = {
 }
 
 scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
-
+	
+	
 	gravity(3200)
-
+	camPos(160, 192)
+	let score = 0
 	// add level to scene
-	const level = addLevel(LEVELS[levelId ?? 0], levelConf)
+	let level = addLevel(LEVELS[levelId ?? 0], levelConf)
 
+	 let upScore = k.add([
+		z(2),
+        text(score),
+        pos(10,10),
+        scale(1),
+        origin("center"),
+    ]);
 	// define player object
 	const player = add([
 		sprite("player"),
 		pos(0, 0),
 		area(),
-		scale(1),
+		scale(0.7),
 		// makes it fall to gravity and jumpable
 		body(),
 		// the custom component we defined above
@@ -89,8 +97,7 @@ scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
 
 	// action() runs every frame
 	player.onUpdate(() => {
-		// center camera to player
-		camPos(player.pos)
+		
 		// check fall death
 		if (player.pos.y >= FALL_DEATH) {
 			go("lose")
@@ -117,6 +124,28 @@ scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
 			go("lose")
 		
 		}
+	})
+
+	function randomPlat(len = 6){
+		plat=""
+		for(let i=0; i< len;i++){
+			if(Math.random()<0.5){plat+= " "}
+			else{plat+= "="}
+		}
+		return plat
+	}
+	
+	loop(2, () => {
+		score +=1
+		let prevLvl = LEVELS[0].slice()
+		destroyAll("platform")
+		for(let i = 0; i<prevLvl.length-2;i++){
+			LEVELS[0][i] = prevLvl[i+2]
+		}
+		LEVELS[0][6] = "      "
+		LEVELS[0][7] = randomPlat()
+		level = addLevel(LEVELS[levelId ?? 0], levelConf)
+		upScore.text = score
 	})
 
 	// jump with space

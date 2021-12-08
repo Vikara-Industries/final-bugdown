@@ -218,8 +218,8 @@
       r[0] = this.m[5] * t - this.m[6] * a + this.m[7] * U, r[4] = -(this.m[4] * t - this.m[6] * S + this.m[7] * v), r[8] = this.m[4] * a - this.m[5] * S + this.m[7] * D, r[12] = -(this.m[4] * U - this.m[5] * v + this.m[6] * D), r[1] = -(this.m[1] * t - this.m[2] * a + this.m[3] * U), r[5] = this.m[0] * t - this.m[2] * S + this.m[3] * v, r[9] = -(this.m[0] * a - this.m[1] * S + this.m[3] * D), r[13] = this.m[0] * U - this.m[1] * v + this.m[2] * D, r[2] = this.m[1] * V - this.m[2] * A + this.m[3] * L, r[6] = -(this.m[0] * V - this.m[2] * N + this.m[3] * Y), r[10] = this.m[0] * ie - this.m[1] * N + this.m[3] * j, r[14] = -(this.m[0] * L - this.m[1] * Y + this.m[2] * j), r[3] = -(this.m[1] * oe - this.m[2] * J + this.m[3] * ue), r[7] = this.m[0] * oe - this.m[2] * y + this.m[3] * ye, r[11] = -(this.m[0] * J - this.m[1] * y + this.m[3] * P), r[15] = this.m[0] * ue - this.m[1] * ye + this.m[2] * P;
       let T = this.m[0] * r[0] + this.m[1] * r[4] + this.m[2] * r[8] + this.m[3] * r[12];
       for (let _ = 0; _ < 4; _++)
-        for (let z = 0; z < 4; z++)
-          r[_ * 4 + z] *= 1 / T;
+        for (let z2 = 0; z2 < 4; z2++)
+          r[_ * 4 + z2] *= 1 / T;
       return le(r);
     } };
   }
@@ -768,14 +768,14 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         o.width && o.height ? (x.x = o.width / g, x.y = o.height / R) : o.width ? (x.x = o.width / g, x.y = x.x) : o.height && (x.y = o.height / R, x.x = x.y), T(se(ne({}, o), { scale: x.scale(o.scale || u(1)), tex: o.tex, quad: f, width: g, height: R }));
     }
     i(_, "drawTexture");
-    function z(o, f, g, R, x, E = 1) {
+    function z2(o, f, g, R, x, E = 1) {
       R = Ce(R % 360), x = Ce(x % 360), x <= R && (x += Math.PI * 2);
       let C = Math.ceil(Math.max(Math.sqrt(f + g) * 3 * (E || 1), 16)), O = (x - R) / C, H = [];
       for (let re = R; re < x; re += O)
         H.push(o.add(f * Math.cos(re), g * Math.sin(re)));
       return H.push(o.add(f * Math.cos(x), g * Math.sin(x))), H;
     }
-    i(z, "getArcPts");
+    i(z2, "getArcPts");
     function X(o) {
       if (o.width === void 0 || o.height === void 0)
         throw new Error('drawRect() requires property "width" and "height".');
@@ -784,7 +784,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       let f = o.width, g = o.height, x = Ge(o.origin || pt).add(1, 1).scale(u(f, g).scale(-0.5)), E = [u(0, 0), u(f, 0), u(f, g), u(0, g)];
       if (o.radius) {
         let C = Math.min(Math.min(f, g) / 2, o.radius);
-        E = [u(C, 0), u(f - C, 0), ...z(u(f - C, C), C, C, 270, 360), u(f, C), u(f, g - C), ...z(u(f - C, g - C), C, C, 0, 90), u(f - C, g), u(C, g), ...z(u(C, g - C), C, C, 90, 180), u(0, g - C), u(0, C), ...z(u(C, C), C, C, 180, 270)];
+        E = [u(C, 0), u(f - C, 0), ...z2(u(f - C, C), C, C, 270, 360), u(f, C), u(f, g - C), ...z2(u(f - C, g - C), C, C, 0, 90), u(f - C, g), u(C, g), ...z2(u(C, g - C), C, C, 90, 180), u(0, g - C), u(0, C), ...z2(u(C, C), C, C, 180, 270)];
       }
       ae(se(ne({}, o), { offset: x, pts: E }));
     }
@@ -800,7 +800,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       D(E, [0, 1, 3, 1, 2, 3], t.defTex, o.shader, o.uniform);
     }
     i(W, "drawLine");
-    function k(o) {
+    function k2(o) {
       let f = o.pts;
       if (!f)
         throw new Error('drawLines() requires property "pts".');
@@ -820,7 +820,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           for (let g = 0; g < f.length - 1; g++)
             W(se(ne({}, o), { p1: f[g], p2: f[g + 1] }));
     }
-    i(k, "drawLines");
+    i(k2, "drawLines");
     function q(o) {
       if (!o.p1 || !o.p2 || !o.p3)
         throw new Error('drawPolygon() requires properties "p1", "p2" and "p3".');
@@ -837,7 +837,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       var f, g;
       if (o.radiusX === void 0 || o.radiusY === void 0)
         throw new Error('drawEllipse() requires properties "radiusX" and "radiusY".');
-      o.radiusX === 0 || o.radiusY === 0 || ae(se(ne({}, o), { pts: z(u(0), o.radiusX, o.radiusY, (f = o.start) != null ? f : 0, (g = o.end) != null ? g : 360, o.resolution), radius: 0 }));
+      o.radiusX === 0 || o.radiusY === 0 || ae(se(ne({}, o), { pts: z2(u(0), o.radiusX, o.radiusY, (f = o.start) != null ? f : 0, (g = o.end) != null ? g : 360, o.resolution), radius: 0 }));
     }
     i(F, "drawEllipse");
     function ae(o) {
@@ -853,7 +853,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
           }), C = [...Array(f - 2).keys()].map((O) => [0, O + 1, O + 2]).flat();
           D(E, (R = o.indices) != null ? R : C, t.defTex, o.shader, o.uniform);
         }
-        o.outline && k({ pts: [...o.pts, o.pts[0]], radius: o.radius, width: o.outline.width, color: o.outline.color }), P();
+        o.outline && k2({ pts: [...o.pts, o.pts[0]], radius: o.radius, width: o.outline.width, color: o.outline.color }), P();
       }
     }
     i(ae, "drawPolygon");
@@ -930,7 +930,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     function bt() {
       return t.background.clone();
     }
-    return i(bt, "background"), Re(), A(), L(), { width: Ee, height: ce, scale: xe, makeTex: U, makeShader: S, makeFont: v, drawTexture: _, drawText: G, drawFmtText: De, drawRect: X, drawLine: W, drawLines: k, drawTriangle: q, drawCircle: $, drawEllipse: F, drawPolygon: ae, drawUVQuad: T, fmtText: w, frameStart: A, frameEnd: L, pushTranslate: j, pushScale: oe, pushRotateX: J, pushRotateY: ue, pushRotateZ: y, pushTransform: ye, popTransform: P, applyMatrix: ie, drawCalls: N, background: bt };
+    return i(bt, "background"), Re(), A(), L(), { width: Ee, height: ce, scale: xe, makeTex: U, makeShader: S, makeFont: v, drawTexture: _, drawText: G, drawFmtText: De, drawRect: X, drawLine: W, drawLines: k2, drawTriangle: q, drawCircle: $, drawEllipse: F, drawPolygon: ae, drawUVQuad: T, fmtText: w, frameStart: A, frameEnd: L, pushTranslate: j, pushScale: oe, pushRotateX: J, pushRotateY: ue, pushRotateZ: y, pushTransform: ye, popTransform: P, applyMatrix: ie, drawCalls: N, background: bt };
   }
   i(br, "gfxInit");
   function Ur(e) {
@@ -1066,10 +1066,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       return t.canvas.toDataURL();
     }
     i(_, "screenshot");
-    function z(w) {
+    function z2(w) {
       return w && (t.canvas.style.cursor = w), t.canvas.style.cursor;
     }
-    i(z, "cursor");
+    i(z2, "cursor");
     function X(w = true) {
       w ? Un(t.canvas) : gn();
     }
@@ -1078,7 +1078,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       return Boolean(wn());
     }
     i(W, "isFullscreen");
-    function k(w) {
+    function k2(w) {
       let G = i((De) => {
         if (document.visibilityState !== "visible") {
           t.loopID = requestAnimationFrame(G);
@@ -1094,11 +1094,11 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }, "frame");
       t.stopped = false, t.loopID = requestAnimationFrame(G);
     }
-    i(k, "run");
+    i(k2, "run");
     function q() {
       cancelAnimationFrame(t.loopID), t.stopped = true;
     }
-    return i(q, "quit"), { gl: v, mousePos: V, mouseDeltaPos: A, isKeyDown: J, isKeyPressed: j, isKeyPressedRepeat: oe, isKeyReleased: ue, isMouseDown: N, isMousePressed: L, isMouseReleased: Y, isMouseMoved: ie, charInputted: y, cursor: z, dt: ye, time: P, fps: T, screenshot: _, run: k, quit: q, isFocused: () => document.activeElement === t.canvas, focus: () => t.canvas.focus(), canvas: t.canvas, isTouch: t.isTouch, scale: t.scale, fullscreen: X, isFullscreen: W };
+    return i(q, "quit"), { gl: v, mousePos: V, mouseDeltaPos: A, isKeyDown: J, isKeyPressed: j, isKeyPressedRepeat: oe, isKeyReleased: ue, isMouseDown: N, isMousePressed: L, isMouseReleased: Y, isMouseMoved: ie, charInputted: y, cursor: z2, dt: ye, time: P, fps: T, screenshot: _, run: k2, quit: q, isFocused: () => document.activeElement === t.canvas, focus: () => t.canvas.focus(), canvas: t.canvas, isTouch: t.isTouch, scale: t.scale, fullscreen: X, isFullscreen: W };
   }
   i(gr, "appInit");
   var wr = tr("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L5QNSqT5iiySS9Ja2SV//5ME0ak//+4KgAAABgQBAADAMDgYCAEgCteQ0fZH6+ICXA357+MPfhR/+ywRf/U///LVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/+5JknQAFoWhGLm5gBClBmT3GiAAAAAGkHAAAIAAANIOAAARVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
@@ -1213,14 +1213,14 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       return P !== void 0 && (a.loadRoot = P), a.loadRoot;
     }
     i(v, "loadRoot");
-    function D(P, T, _, z, X = {}) {
-      return U(new Promise((W, k) => {
+    function D(P, T, _, z2, X = {}) {
+      return U(new Promise((W, k2) => {
         let q = Rr(T) ? T : a.loadRoot + T;
         $t(q).then(($) => {
           var ae;
-          let F = e.makeFont(e.makeTex($, X), _, z, (ae = X.chars) != null ? ae : qt);
+          let F = e.makeFont(e.makeTex($, X), _, z2, (ae = X.chars) != null ? ae : qt);
           P && (a.fonts[P] = F), W(F);
-        }).catch(k);
+        }).catch(k2);
       }));
     }
     i(D, "loadFont");
@@ -1244,111 +1244,111 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       return (T = a.shaders[P]) != null ? T : null;
     }
     i(N, "getShader");
-    function Y(P = 1, T = 1, _ = 0, z = 0, X = 1, W = 1) {
-      let k = [], q = X / P, $ = W / T;
+    function Y(P = 1, T = 1, _ = 0, z2 = 0, X = 1, W = 1) {
+      let k2 = [], q = X / P, $ = W / T;
       for (let F = 0; F < T; F++)
         for (let ae = 0; ae < P; ae++)
-          k.push(de(_ + ae * q, z + F * $, q, $));
-      return k;
+          k2.push(de(_ + ae * q, z2 + F * $, q, $));
+      return k2;
     }
     i(Y, "slice");
     function ie(P, T) {
       return U(typeof T == "string" ? fetch(v() + T).then((_) => _.json()).then((_) => ie(P, _)) : j(null, P).then((_) => {
-        let z = {}, X = _.tex.width, W = _.tex.height;
-        for (let k in T) {
-          let q = T[k], $ = { tex: _.tex, frames: Y(q.sliceX, q.sliceY, q.x / X, q.y / W, q.width / X, q.height / W), anims: q.anims };
-          a.sprites[k] = $, z[k] = $;
+        let z2 = {}, X = _.tex.width, W = _.tex.height;
+        for (let k2 in T) {
+          let q = T[k2], $ = { tex: _.tex, frames: Y(q.sliceX, q.sliceY, q.x / X, q.y / W, q.width / X, q.height / W), anims: q.anims };
+          a.sprites[k2] = $, z2[k2] = $;
         }
-        return z;
+        return z2;
       }));
     }
     i(ie, "loadSpriteAtlas");
     function j(P, T, _ = { sliceX: 1, sliceY: 1, anims: {} }) {
-      function z(X, W, k = { sliceX: 1, sliceY: 1, anims: {} }) {
-        let q = e.makeTex(W, k), $ = Y(k.sliceX || 1, k.sliceY || 1), F = { tex: q, frames: $, anims: k.anims || {} };
+      function z2(X, W, k2 = { sliceX: 1, sliceY: 1, anims: {} }) {
+        let q = e.makeTex(W, k2), $ = Y(k2.sliceX || 1, k2.sliceY || 1), F = { tex: q, frames: $, anims: k2.anims || {} };
         return X && (a.sprites[X] = F), F;
       }
-      return i(z, "loadRawSprite"), U(new Promise((X, W) => {
+      return i(z2, "loadRawSprite"), U(new Promise((X, W) => {
         if (!T)
           return W(`expected sprite src for "${P}"`);
         if (typeof T == "string") {
-          let k = Rr(T) ? T : a.loadRoot + T;
-          $t(k).then((q) => X(z(P, q, _))).catch(W);
+          let k2 = Rr(T) ? T : a.loadRoot + T;
+          $t(k2).then((q) => X(z2(P, q, _))).catch(W);
         } else
-          X(z(P, T, _));
+          X(z2(P, T, _));
       }));
     }
     i(j, "loadSprite");
     function oe(P, T) {
-      return U(new Promise((_, z) => {
+      return U(new Promise((_, z2) => {
         fetch(v() + T).then((X) => X.json()).then((X) => er(this, null, function* () {
-          let W = yield Promise.all(X.frames.map($t)), k = document.createElement("canvas");
-          k.width = X.width, k.height = X.height * X.frames.length;
-          let q = k.getContext("2d");
+          let W = yield Promise.all(X.frames.map($t)), k2 = document.createElement("canvas");
+          k2.width = X.width, k2.height = X.height * X.frames.length;
+          let q = k2.getContext("2d");
           return W.forEach(($, F) => {
             q.drawImage($, 0, F * X.height);
-          }), j(P, k, { sliceY: X.frames.length, anims: X.anims });
-        })).then(_).catch(z);
+          }), j(P, k2, { sliceY: X.frames.length, anims: X.anims });
+        })).then(_).catch(z2);
       }));
     }
     i(oe, "loadPedit");
     function J(P, T, _) {
-      return U(new Promise((z, X) => {
+      return U(new Promise((z2, X) => {
         let W = v() + _;
-        j(P, T).then((k) => {
+        j(P, T).then((k2) => {
           fetch(W).then((q) => q.json()).then((q) => {
             let $ = q.meta.size;
-            k.frames = q.frames.map((F) => de(F.frame.x / $.w, F.frame.y / $.h, F.frame.w / $.w, F.frame.h / $.h));
+            k2.frames = q.frames.map((F) => de(F.frame.x / $.w, F.frame.y / $.h, F.frame.w / $.w, F.frame.h / $.h));
             for (let F of q.meta.frameTags)
-              F.from === F.to ? k.anims[F.name] = F.from : k.anims[F.name] = { from: F.from, to: F.to, speed: 10, loop: true };
-            z(k);
+              F.from === F.to ? k2.anims[F.name] = F.from : k2.anims[F.name] = { from: F.from, to: F.to, speed: 10, loop: true };
+            z2(k2);
           }).catch(X);
         }).catch(X);
       }));
     }
     i(J, "loadAseprite");
-    function ue(P, T, _, z = false) {
-      function X(W, k, q) {
-        let $ = e.makeShader(k, q);
+    function ue(P, T, _, z2 = false) {
+      function X(W, k2, q) {
+        let $ = e.makeShader(k2, q);
         return W && (a.shaders[W] = $), $;
       }
-      return i(X, "loadRawShader"), U(new Promise((W, k) => {
+      return i(X, "loadRawShader"), U(new Promise((W, k2) => {
         if (!T && !_)
-          return k("no shader");
+          return k2("no shader");
         function q($) {
           return $ ? fetch(a.loadRoot + $).then((F) => {
             if (F.ok)
               return F.text();
             throw new Error(`failed to load ${$}`);
-          }).catch(k) : new Promise((F) => F(null));
+          }).catch(k2) : new Promise((F) => F(null));
         }
-        if (i(q, "resolveUrl"), z)
+        if (i(q, "resolveUrl"), z2)
           Promise.all([q(T), q(_)]).then(([$, F]) => {
             W(X(P, $, F));
-          }).catch(k);
+          }).catch(k2);
         else
           try {
             W(X(P, T, _));
           } catch ($) {
-            k($);
+            k2($);
           }
       }));
     }
     i(ue, "loadShader");
     function y(P, T) {
       let _ = a.loadRoot + T;
-      return U(new Promise((z, X) => {
+      return U(new Promise((z2, X) => {
         if (!T)
           return X(`expected sound src for "${P}"`);
         typeof T == "string" && fetch(_).then((W) => {
           if (W.ok)
             return W.arrayBuffer();
           throw new Error(`failed to load ${_}`);
-        }).then((W) => new Promise((k, q) => {
-          r.ctx.decodeAudioData(W, k, q);
+        }).then((W) => new Promise((k2, q) => {
+          r.ctx.decodeAudioData(W, k2, q);
         })).then((W) => {
-          let k = { buf: W };
-          P && (a.sounds[P] = k), z(k);
+          let k2 = { buf: W };
+          P && (a.sounds[P] = k2), z2(k2);
         }).catch(X);
       }));
     }
@@ -1488,10 +1488,10 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       return n !== void 0 && (y.cam.angle = n), y.cam.angle;
     }
     i(_, "camRot");
-    function z(n = 12) {
+    function z2(n = 12) {
       y.cam.shake = n;
     }
-    i(z, "shake");
+    i(z2, "shake");
     function X(n) {
       return y.camMatrix.multVec2(n);
     }
@@ -1500,7 +1500,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       return y.camMatrix.invert().multVec2(n);
     }
     i(W, "toWorld");
-    let k = /* @__PURE__ */ new Set(["id", "require"]), q = /* @__PURE__ */ new Set(["add", "load", "update", "draw", "destroy", "inspect"]);
+    let k2 = /* @__PURE__ */ new Set(["id", "require"]), q = /* @__PURE__ */ new Set(["add", "load", "update", "draw", "destroy", "inspect"]);
     function $(n) {
       let s = /* @__PURE__ */ new Map(), c = {}, h = {}, b = { _id: null, hidden: false, paused: false, use(l) {
         if (!l)
@@ -1511,7 +1511,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         let d = l.id ? s.get(l.id) : c;
         d.cleanups = [];
         for (let m in l)
-          if (!k.has(m)) {
+          if (!k2.has(m)) {
             if (typeof l[m] == "function") {
               let M = l[m].bind(this);
               if (q.has(m)) {
@@ -2408,7 +2408,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       } };
     }
     i(Yt, "record");
-    let Xe = { loadRoot: v.loadRoot, loadSprite: v.loadSprite, loadSpriteAtlas: v.loadSpriteAtlas, loadSound: v.loadSound, loadFont: v.loadFont, loadShader: v.loadShader, loadAseprite: v.loadAseprite, loadPedit: v.loadPedit, loadBean: v.loadBean, load: v.load, width: U, height: S, center: vt, dt: L, time: t.time, screenshot: t.screenshot, record: Yt, focused: t.isFocused, isFocused: t.isFocused, focus: t.focus, cursor: t.cursor, regCursor: Ut, fullscreen: t.fullscreen, isFullscreen: t.isFullscreen, onLoad: _e, ready: _e, isTouch: () => t.isTouch, layers: ye, camPos: P, camScale: T, camRot: _, shake: z, toScreen: X, toWorld: W, gravity: et, add: F, readd: ae, destroy: Me, destroyAll: Ve, get: be, every: me, revery: Ye, pos: ge, scale: tt, rotate: gt, color: Ze, opacity: Je, origin: wt, layer: xt, area: Lr, sprite: Fr, text: Or, rect: _r, circle: Wr, uvquad: Xr, outline: qr, body: zr, shader: Zr, timer: $r, solid: Jr, fixed: Hr, stay: Nr, health: jr, lifespan: Qr, z: rt, move: we, cleanup: Ue, follow: nt, state: Kr, on: w, onUpdate: G, onDraw: De, onCollide: Re, onClick: Ee, onHover: ce, action: G, render: De, collides: Re, clicks: Ee, hovers: ce, onKeyDown: o, onKeyPress: f, onKeyPressRepeat: g, onKeyRelease: R, onMouseDown: x, onMousePress: E, onMouseRelease: C, onMouseMove: O, onCharInput: H, onTouchStart: re, onTouchMove: Z, onTouchEnd: ee, keyDown: o, keyPress: f, keyPressRep: g, keyRelease: R, mouseDown: x, mouseClick: E, mouseRelease: C, mouseMove: O, charInput: H, touchStart: re, touchMove: Z, touchEnd: ee, mousePos: Y, mouseWorldPos: ie, mouseDeltaPos: t.mouseDeltaPos, isKeyDown: t.isKeyDown, isKeyPressed: t.isKeyPressed, isKeyPressedRepeat: t.isKeyPressedRepeat, isKeyReleased: t.isKeyReleased, isMouseDown: t.isMouseDown, isMousePressed: t.isMousePressed, isMouseReleased: t.isMouseReleased, isMouseMoved: t.isMouseMoved, keyIsDown: t.isKeyDown, keyIsPressed: t.isKeyPressed, keyIsPressedRep: t.isKeyPressedRepeat, keyIsReleased: t.isKeyReleased, mouseIsDown: t.isMouseDown, mouseIsClicked: t.isMousePressed, mouseIsReleased: t.isMouseReleased, mouseIsMoved: t.isMouseMoved, loop: bt, wait: xe, play: N, volume: r.volume, burp: r.burp, audioCtx: r.ctx, rng: Dt, rand: je, randi: Rt, randSeed: ar, vec2: u, dir: ot, rgb: I, hsl2rgb: ir, quad: de, choose: cr, chance: ur, lerp: Ne, map: Oe, mapc: rr, wave: St, deg2rad: Ce, rad2deg: Tt, testAreaRect: dt, testAreaLine: kt, testAreaCircle: It, testAreaPolygon: Lt, testAreaPoint: ht, testAreaArea: Ft, testLineLine: Pe, testRectRect: At, testRectLine: at, testRectPoint: Be, testPolygonPoint: $e, testLinePolygon: Qe, testPolygonPolygon: lt, testCircleCircle: Vt, testCirclePoint: ct, testRectPolygon: ut, drawSprite: j, drawText: oe, drawRect: a.drawRect, drawLine: a.drawLine, drawLines: a.drawLines, drawTriangle: a.drawTriangle, drawCircle: a.drawCircle, drawEllipse: a.drawEllipse, drawUVQuad: a.drawUVQuad, drawPolygon: a.drawPolygon, pushTransform: a.pushTransform, popTransform: a.popTransform, pushTranslate: a.pushTranslate, pushRotate: a.pushRotateZ, pushScale: a.pushScale, debug: Q, scene: en, go: tn, addLevel: sn, getData: rn, setData: Gt, plug: Et, ASCII_CHARS: qt, CP437_CHARS: Dr, LEFT: u(-1, 0), RIGHT: u(1, 0), UP: u(0, -1), DOWN: u(0, 1), RED: I(255, 0, 0), GREEN: I(0, 255, 0), BLUE: I(0, 0, 255), YELLOW: I(255, 255, 0), MAGENTA: I(255, 0, 255), CYAN: I(0, 255, 255), WHITE: I(255, 255, 255), BLACK: I(0, 0, 0), canvas: t.canvas };
+    let Xe = { loadRoot: v.loadRoot, loadSprite: v.loadSprite, loadSpriteAtlas: v.loadSpriteAtlas, loadSound: v.loadSound, loadFont: v.loadFont, loadShader: v.loadShader, loadAseprite: v.loadAseprite, loadPedit: v.loadPedit, loadBean: v.loadBean, load: v.load, width: U, height: S, center: vt, dt: L, time: t.time, screenshot: t.screenshot, record: Yt, focused: t.isFocused, isFocused: t.isFocused, focus: t.focus, cursor: t.cursor, regCursor: Ut, fullscreen: t.fullscreen, isFullscreen: t.isFullscreen, onLoad: _e, ready: _e, isTouch: () => t.isTouch, layers: ye, camPos: P, camScale: T, camRot: _, shake: z2, toScreen: X, toWorld: W, gravity: et, add: F, readd: ae, destroy: Me, destroyAll: Ve, get: be, every: me, revery: Ye, pos: ge, scale: tt, rotate: gt, color: Ze, opacity: Je, origin: wt, layer: xt, area: Lr, sprite: Fr, text: Or, rect: _r, circle: Wr, uvquad: Xr, outline: qr, body: zr, shader: Zr, timer: $r, solid: Jr, fixed: Hr, stay: Nr, health: jr, lifespan: Qr, z: rt, move: we, cleanup: Ue, follow: nt, state: Kr, on: w, onUpdate: G, onDraw: De, onCollide: Re, onClick: Ee, onHover: ce, action: G, render: De, collides: Re, clicks: Ee, hovers: ce, onKeyDown: o, onKeyPress: f, onKeyPressRepeat: g, onKeyRelease: R, onMouseDown: x, onMousePress: E, onMouseRelease: C, onMouseMove: O, onCharInput: H, onTouchStart: re, onTouchMove: Z, onTouchEnd: ee, keyDown: o, keyPress: f, keyPressRep: g, keyRelease: R, mouseDown: x, mouseClick: E, mouseRelease: C, mouseMove: O, charInput: H, touchStart: re, touchMove: Z, touchEnd: ee, mousePos: Y, mouseWorldPos: ie, mouseDeltaPos: t.mouseDeltaPos, isKeyDown: t.isKeyDown, isKeyPressed: t.isKeyPressed, isKeyPressedRepeat: t.isKeyPressedRepeat, isKeyReleased: t.isKeyReleased, isMouseDown: t.isMouseDown, isMousePressed: t.isMousePressed, isMouseReleased: t.isMouseReleased, isMouseMoved: t.isMouseMoved, keyIsDown: t.isKeyDown, keyIsPressed: t.isKeyPressed, keyIsPressedRep: t.isKeyPressedRepeat, keyIsReleased: t.isKeyReleased, mouseIsDown: t.isMouseDown, mouseIsClicked: t.isMousePressed, mouseIsReleased: t.isMouseReleased, mouseIsMoved: t.isMouseMoved, loop: bt, wait: xe, play: N, volume: r.volume, burp: r.burp, audioCtx: r.ctx, rng: Dt, rand: je, randi: Rt, randSeed: ar, vec2: u, dir: ot, rgb: I, hsl2rgb: ir, quad: de, choose: cr, chance: ur, lerp: Ne, map: Oe, mapc: rr, wave: St, deg2rad: Ce, rad2deg: Tt, testAreaRect: dt, testAreaLine: kt, testAreaCircle: It, testAreaPolygon: Lt, testAreaPoint: ht, testAreaArea: Ft, testLineLine: Pe, testRectRect: At, testRectLine: at, testRectPoint: Be, testPolygonPoint: $e, testLinePolygon: Qe, testPolygonPolygon: lt, testCircleCircle: Vt, testCirclePoint: ct, testRectPolygon: ut, drawSprite: j, drawText: oe, drawRect: a.drawRect, drawLine: a.drawLine, drawLines: a.drawLines, drawTriangle: a.drawTriangle, drawCircle: a.drawCircle, drawEllipse: a.drawEllipse, drawUVQuad: a.drawUVQuad, drawPolygon: a.drawPolygon, pushTransform: a.pushTransform, popTransform: a.popTransform, pushTranslate: a.pushTranslate, pushRotate: a.pushRotateZ, pushScale: a.pushScale, debug: Q, scene: en, go: tn, addLevel: sn, getData: rn, setData: Gt, plug: Et, ASCII_CHARS: qt, CP437_CHARS: Dr, LEFT: u(-1, 0), RIGHT: u(1, 0), UP: u(0, -1), DOWN: u(0, 1), RED: I(255, 0, 0), GREEN: I(0, 255, 0), BLUE: I(0, 0, 255), YELLOW: I(255, 255, 0), MAGENTA: I(255, 0, 255), CYAN: I(0, 255, 255), WHITE: I(255, 255, 255), BLACK: I(0, 0, 0), canvas: t.canvas };
     if (Et(Ir), e.plugins && e.plugins.forEach(Et), e.global !== false)
       for (let n in Xe)
         window[n] = Xe[n];
@@ -2499,7 +2499,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   }, "default");
 
   // scripts/game.js
-  Es();
+  var k = Es({ width: 384, height: 512 });
   loadSprite("player", "./assets/sprites/player.png");
   loadSprite("grass", "./assets/sprites/dirt.png");
   loadSprite("bean", "./assets/sprites/bean.png");
@@ -2519,22 +2519,19 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       }
     };
   }
-  var JUMP_FORCE = 1320;
+  var JUMP_FORCE = 1e3;
   var MOVE_SPEED = 480;
   var FALL_DEATH = 2400;
   var LEVELS = [
     [
-      "                          ",
-      "  ======    ========      ",
-      "                          ",
-      "                          ",
-      "                          ",
-      "       = >  =         =   ",
-      "     ========         =   ",
-      "                      =   ",
-      "                      =   ",
-      "               = >    =   ",
-      "=========================="
+      "      ",
+      "==  ==",
+      "      ",
+      "  ==  ",
+      "      ",
+      "==  ==",
+      "      ",
+      "======"
     ]
   ];
   var levelConf = {
@@ -2544,7 +2541,8 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       sprite("grass"),
       area(),
       solid(),
-      origin("bot")
+      origin("bot"),
+      "platform"
     ],
     ">": () => [
       sprite("bean"),
@@ -2557,17 +2555,25 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   };
   scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
     gravity(3200);
-    const level = addLevel(LEVELS[levelId ?? 0], levelConf);
+    camPos(160, 192);
+    let score = 0;
+    let level = addLevel(LEVELS[levelId ?? 0], levelConf);
+    let upScore = k.add([
+      z(2),
+      text(score),
+      pos(10, 10),
+      scale(1),
+      origin("center")
+    ]);
     const player = add([
       sprite("player"),
       pos(0, 0),
       area(),
-      scale(1),
+      scale(0.7),
       body(),
       origin("bot")
     ]);
     player.onUpdate(() => {
-      camPos(player.pos);
       if (player.pos.y >= FALL_DEATH) {
         go("lose");
       }
@@ -2586,6 +2592,29 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       if (!col.isBottom()) {
         go("lose");
       }
+    });
+    function randomPlat(len = 6) {
+      plat = "";
+      for (let i2 = 0; i2 < len; i2++) {
+        if (Math.random() < 0.5) {
+          plat += " ";
+        } else {
+          plat += "=";
+        }
+      }
+      return plat;
+    }
+    loop(2, () => {
+      score += 1;
+      let prevLvl = LEVELS[0].slice();
+      destroyAll("platform");
+      for (let i2 = 0; i2 < prevLvl.length - 2; i2++) {
+        LEVELS[0][i2] = prevLvl[i2 + 2];
+      }
+      LEVELS[0][6] = "      ";
+      LEVELS[0][7] = randomPlat();
+      level = addLevel(LEVELS[levelId ?? 0], levelConf);
+      upScore.text = score;
     });
     onKeyPress("space", () => {
       if (player.isGrounded()) {
