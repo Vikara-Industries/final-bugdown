@@ -2498,10 +2498,127 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
     }), Xe;
   }, "default");
 
-  // game.js
+  // scripts/game.js
   Es();
-  add([
-    text("hello"),
-    pos(120, 80)
-  ]);
+  loadSprite("player", "./assets/sprites/player.png");
+  loadSprite("grass", "./assets/sprites/dirt.png");
+  loadSprite("bean", "./assets/sprites/bean.png");
+  function patrol(speed = 60, dir = 1) {
+    return {
+      id: "patrol",
+      require: ["pos", "area"],
+      add() {
+        this.on("collide", (obj, col) => {
+          if (col.isLeft() || col.isRight()) {
+            dir = -dir;
+          }
+        });
+      },
+      update() {
+        this.move(speed * dir, 0);
+      }
+    };
+  }
+  var JUMP_FORCE = 1320;
+  var MOVE_SPEED = 480;
+  var FALL_DEATH = 2400;
+  var LEVELS = [
+    [
+      "                          ",
+      "  ======    ========      ",
+      "                          ",
+      "                          ",
+      "                          ",
+      "       = >  =         =   ",
+      "     ========         =   ",
+      "                      =   ",
+      "                      =   ",
+      "               = >    =   ",
+      "=========================="
+    ]
+  ];
+  var levelConf = {
+    width: 64,
+    height: 64,
+    "=": () => [
+      sprite("grass"),
+      area(),
+      solid(),
+      origin("bot")
+    ],
+    ">": () => [
+      sprite("bean"),
+      area(),
+      origin("bot"),
+      body(),
+      patrol(),
+      "enemy"
+    ]
+  };
+  scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
+    gravity(3200);
+    const level = addLevel(LEVELS[levelId ?? 0], levelConf);
+    const player = add([
+      sprite("player"),
+      pos(0, 0),
+      area(),
+      scale(1),
+      body(),
+      origin("bot")
+    ]);
+    player.onUpdate(() => {
+      camPos(player.pos);
+      if (player.pos.y >= FALL_DEATH) {
+        go("lose");
+      }
+    });
+    player.onCollide("danger", () => {
+      go("lose");
+    });
+    player.onGround((l) => {
+      if (l.is("enemy")) {
+        player.jump(JUMP_FORCE * 1.5);
+        destroy(l);
+        addKaboom(player.pos);
+      }
+    });
+    player.onCollide("enemy", (e, col) => {
+      if (!col.isBottom()) {
+        go("lose");
+      }
+    });
+    onKeyPress("space", () => {
+      if (player.isGrounded()) {
+        player.jump(JUMP_FORCE);
+      }
+    });
+    onKeyDown("left", () => {
+      player.move(-MOVE_SPEED, 0);
+    });
+    onKeyDown("right", () => {
+      player.move(MOVE_SPEED, 0);
+    });
+    onKeyPress("down", () => {
+      player.weight = 3;
+    });
+    onKeyRelease("down", () => {
+      player.weight = 1;
+    });
+    onKeyPress("f", () => {
+      fullscreen(!fullscreen());
+    });
+  });
+  scene("lose", () => {
+    add([
+      text("You Lose")
+    ]);
+    onKeyPress(() => go("game"));
+  });
+  scene("win", () => {
+    add([
+      text("You Win")
+    ]);
+    onKeyPress(() => go("game"));
+  });
+  go("game");
 })();
