@@ -1,5 +1,9 @@
 import kaboom from "kaboom";
-const k = kaboom({width:384,height:512})
+const LVLH = 576
+const LVLW = 384
+const k = kaboom({width:LVLW,height:LVLH})
+
+
 
 // load assets
 loadSprite("player", "./assets/sprites/player.png")
@@ -30,6 +34,7 @@ function patrol(speed = 60, dir = 1) {
 const JUMP_FORCE = 1000
 const MOVE_SPEED = 480
 const FALL_DEATH = 2400
+const SHAKE_AMMOUNT = 5
 
 let LEVELS = [
 	[
@@ -39,7 +44,7 @@ let LEVELS = [
 		"  ==  ",
 		"      ",
 		"==  ==",
-		"      ",
+		"= > = ",
 		"======",
 	]
 ]
@@ -49,6 +54,7 @@ const levelConf = {
 	// grid size
 	width: 64,
 	height: 64,
+	pos:(vec2(0,0)),
 	// define each object as a list of components
 	"=": () => [
 		sprite("grass"),
@@ -71,7 +77,8 @@ scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
 	
 	
 	gravity(3200)
-	camPos(160, 192)
+	camPos(LVLW/2.4, LVLH/2.4)
+	//camScale(vec2(LVLW, LVLH))
 	let score = 0
 	// add level to scene
 	let level = addLevel(LEVELS[levelId ?? 0], levelConf)
@@ -126,26 +133,43 @@ scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
 		}
 	})
 
+	const dangerZone = add([
+		origin("topleft"),
+		opacity(0.5),
+		pos(-32,LVLH-110),
+		rect(LVLW,64),
+		area(),
+		"danger",
+		platform=""
+	])
+
 	function randomPlat(len = 6){
 		plat=""
 		for(let i=0; i< len;i++){
-			if(Math.random()<0.5){plat+= " "}
+			if(Math.random()<0.5){platform+= " "}
 			else{plat+= "="}
 		}
 		return plat
 	}
-	
-	loop(2, () => {
-		score +=1
-		let prevLvl = LEVELS[0].slice()
-		destroyAll("platform")
-		for(let i = 0; i<prevLvl.length-2;i++){
-			LEVELS[0][i] = prevLvl[i+2]
+	loop(0.5,()=> {
+		if(dangerZone.platform.length < 6){
+			if(Math.random()<0.5){dangerZone.platform+= " "}
+				else{dangerZone.platform+= "="}
+		}else{
+			shake(SHAKE_AMMOUNT)
+			score += 1
+			let prevLvl = LEVELS[0].slice()
+			destroyAll("platform")
+			for(let i = 0; i<prevLvl.length-2;i++){
+				LEVELS[0][i] = prevLvl[i+2]
+			}
+			LEVELS[0][6] = "      "
+			LEVELS[0][7] = dangerZone.platform
+			level = addLevel(LEVELS[levelId ?? 0], levelConf)
+			upScore.text = score
+			dangerZone.platform = ""
 		}
-		LEVELS[0][6] = "      "
-		LEVELS[0][7] = randomPlat()
-		level = addLevel(LEVELS[levelId ?? 0], levelConf)
-		upScore.text = score
+			
 	})
 
 	// jump with space

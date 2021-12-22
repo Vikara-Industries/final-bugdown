@@ -2499,11 +2499,13 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   }, "default");
 
   // scripts/game.js
-  var k = Es({ width: 384, height: 512 });
-  loadSprite("player", "./assets/sprites/player.png");
+  var LVLH = 576;
+  var LVLW = 384;
+  var k = Es({ width: LVLW, height: LVLH });
+  loadSprite("player", "./assets/sprites/snowman.png");
   loadSprite("grass", "./assets/sprites/dirt.png");
-  loadSprite("bean", "./assets/sprites/bean.png");
-  function patrol(speed = 60, dir = 1) {
+  loadSprite("bean", "./assets/sprites/voidboy.png");
+  function patrol(speed = 60,dir= (Math.random() <0.5)? 1: -1) {
     return {
       id: "patrol",
       require: ["pos", "area"],
@@ -2522,6 +2524,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   var JUMP_FORCE = 1e3;
   var MOVE_SPEED = 480;
   var FALL_DEATH = 2400;
+  var SHAKE_AMMOUNT = 5;
   var LEVELS = [
     [
       "      ",
@@ -2530,7 +2533,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       "  ==  ",
       "      ",
       "==  ==",
-      "      ",
+      "  >   ",
       "======"
     ]
   ];
@@ -2551,19 +2554,21 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
       body(),
       patrol(),
       "enemy"
-    ]
+    ],
   };
   scene("game", ({ levelId, coins } = { levelId: 0, coins: 0 }) => {
+    camPos(width()/2-31,height()/2-50)
     gravity(3200);
-    camPos(160, 192);
     let score = 0;
     let level = addLevel(LEVELS[levelId ?? 0], levelConf);
+    
     let upScore = k.add([
       z(2),
       text(score),
       pos(10, 10),
       scale(1),
-      origin("center")
+      origin("topleft"),
+      fixed()
     ]);
     const player = add([
       sprite("player"),
@@ -2593,39 +2598,93 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
         go("lose");
       }
     });
-    function randomPlat(len = 6) {
-      plat = "";
-      for (let i2 = 0; i2 < len; i2++) {
+    const dangerZone = add([
+      origin("topleft"),
+      opacity(0.5),
+      pos(-30, LVLH - 110),
+      rect(LVLW, 64),
+      color(228,5,5),
+      opacity(0.45),
+      area(),
+      layer("ui"),
+      z(10),
+      "danger",
+    ]);
+    dangerZone.platform = ""
+    const leftWall = add([
+      origin('topleft'),
+      pos(-34,-60),
+      rect(1,height()),
+      area(),
+      solid()
+    ]);
+    const rightWall = add([
+      origin('topleft'),
+      pos(LVLW-30,-60),
+      rect(1,height()),
+      area(),
+      solid()
+    ])
+
+    
+    loop(2, () =>{
+      add([
+      sprite("bean"),
+      area(),
+      pos(rand(LVLW-50),0),
+      origin("bot"),
+      body(),
+      patrol(),
+      "enemy"
+      ])
+    })
+    loop(0.5, () => {
+      console.log(dangerZone.platform.length)
+      if (dangerZone.platform.length < 6) {
         if (Math.random() < 0.5) {
-          plat += " ";
+          dangerZone.platform += " ";
         } else {
-          plat += "=";
+          dangerZone.platform += "=";
+          console.log('yo')
+          add([
+            sprite("grass"),
+            pos(vec2(-94+64*dangerZone.platform.length, LVLH-110)),
+            "temp"
+          ])
         }
+      } else {
+        shake(SHAKE_AMMOUNT);
+        score += 1;
+        let prevLvl = LEVELS[0].slice();
+        destroyAll("temp")
+        destroyAll("platform");
+        for (let i2 = 0; i2 < prevLvl.length - 2; i2++) {
+          LEVELS[0][i2] = prevLvl[i2 + 2];
+        }
+        LEVELS[0][6] = "      ";
+        LEVELS[0][7] = dangerZone.platform;
+        level = addLevel(LEVELS[levelId ?? 0], levelConf, pos(width() / 2, height() / 2), origin('center'));
+        upScore.text = score;
+        dangerZone.platform = "";
       }
-      return plat;
-    }
-    loop(2, () => {
-      score += 1;
-      let prevLvl = LEVELS[0].slice();
-      destroyAll("platform");
-      for (let i2 = 0; i2 < prevLvl.length - 2; i2++) {
-        LEVELS[0][i2] = prevLvl[i2 + 2];
-      }
-      LEVELS[0][6] = "      ";
-      LEVELS[0][7] = randomPlat();
-      level = addLevel(LEVELS[levelId ?? 0], levelConf);
-      upScore.text = score;
     });
+
+    //DRAW dangerZone.platform in real time
+
     onKeyPress("space", () => {
       if (player.isGrounded()) {
         player.jump(JUMP_FORCE);
       }
     });
     onKeyDown("left", () => {
-      player.move(-MOVE_SPEED, 0);
-    });
+      if(player.pos.x > 0){
+        player.move(-MOVE_SPEED, 0);
+      }
+      });
     onKeyDown("right", () => {
-      player.move(MOVE_SPEED, 0);
+      if(player.pos.x < width()-64){
+        player.move(MOVE_SPEED, 0);
+      }
     });
     onKeyPress("down", () => {
       player.weight = 3;
@@ -2639,7 +2698,7 @@ vec4 frag(vec3 pos, vec2 uv, vec4 color, sampler2D tex) {
   });
   scene("lose", () => {
     add([
-      text("You Lose")
+      text("Game Over")
     ]);
     onKeyPress(() => go("game"));
   });
